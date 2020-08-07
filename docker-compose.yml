@@ -2,7 +2,7 @@ version: "3.1"
 
 services:
   scheduler:
-    image: pengivan/dask
+    image: pengivan/dask:674a26a
     hostname: dask-scheduler
     ports:
       - "8786:8786"
@@ -10,7 +10,7 @@ services:
     command: ["dask-scheduler"]
 
   worker:
-    image: pengivan/dask
+    image: pengivan/dask:674a26a
     hostname: dask-worker
     command: ["dask-worker", "tcp://scheduler:8786"]
 
@@ -22,10 +22,15 @@ services:
   #       PYTHON_VERSION: "3.7"
   #   image: jupyter/base-notebook:lab
 
-  # notebook:
-  #   image: pengivan/dask
-  #   hostname: notebook
-  #   ports:
-  #     - "8888:8888"
-  #   environment:
-  #     - DASK_SCHEDULER_ADDRESS="tcp://scheduler:8786"
+  notebook:
+    image: pengivan/dask:674a26a
+    hostname: notebook
+    ports:
+      - "8888:8888"
+    environment:
+      - DASK_SCHEDULER_ADDRESS="tcp://scheduler:8786" # Use this param to templatize in the future
+    command:
+      - jupyter
+      - notebook
+      - --ip=0.0.0.0
+      - --allow-root 
